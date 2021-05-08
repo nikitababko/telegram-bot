@@ -1,8 +1,21 @@
+/**
+ * process.env['NTBA_FIX_319'] = 1 - Fixes the problem below
+ * node-telegram-bot-api deprecated Automatic enabling of cancellation of promises is deprecated.
+ * In the future, you will have to enable it yourself.
+ * See https://github.com/yagop/node-telegram-bot-api/issues/319. internal\modules\cjs\loader.js:1236:30
+ */
+process.env['NTBA_FIX_319'] = 1;
+
+// Env cofig
+require('dotenv').config({
+  path: 'config.env',
+});
+
 const TelegramApi = require('node-telegram-bot-api');
 
 const { gameOptions, againOptions } = require('./options');
 
-const token = '1838192895:AAF24dvWQxJydR54qkeFxT1EZpzdijIm5pc';
+const token = process.env.TOKEN;
 
 const bot = new TelegramApi(token, {
   polling: true,
