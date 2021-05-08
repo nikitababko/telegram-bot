@@ -12,7 +12,7 @@
 2. Clone or download and unpack this repo.
 3. Go to the app's folder using `cd telegram-bot`
 4. Run `npm install` or `yarn install`.
-5. Rename .env_example file into .env and set TOKEN to the value, you've got from the BotFather.
+5. Rename config-example.env file into .env and set TOKEN to the value, you've got from the BotFather.
 6. Run `npm start` or `yarn start` and send smth to your bot.
 7. After it says "Welcome" to you, we can go to the next step😎
 
