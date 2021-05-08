@@ -13,13 +13,16 @@ require('dotenv').config({
 
 const TelegramApi = require('node-telegram-bot-api');
 
-const { gameOptions, againOptions } = require('./options');
+const { gameOptions, againOptions, webHookOptions } = require('./options');
 
-const token = process.env.TOKEN;
+const TOKEN = process.env.TOKEN;
 
-const bot = new TelegramApi(token, {
+const bot = new TelegramApi(TOKEN, {
   polling: true,
+  webHookOptions,
 });
+
+bot.setWebHook(`${url}/bot${TOKEN}`);
 
 const chats = {};
 
@@ -62,7 +65,10 @@ const start = () => {
         chatId,
         'https://tlgrm.ru/_/stickers/182/af4/182af458-864d-3756-9525-c4bbe46f7426/4.webp'
       );
-      return bot.sendMessage(chatId, `Добро пожаловать!`);
+      return bot.sendMessage(
+        chatId,
+        `Добро пожаловать!\nСписок доступых команд:\n/start - начальное приветствие\n/info - получить информацию о себе\n/game - игра 'угадай число'`
+      );
     }
 
     if (text === '/info') {

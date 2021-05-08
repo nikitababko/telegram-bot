@@ -28,4 +28,10 @@ module.exports = {
       inline_keyboard: [[{ text: 'Играть еще раз', callback_data: '/again' }]],
     }),
   },
+
+  webHookOptions: {
+    webHook: {
+      port: process.env.PORT,
+    },
+  },
 };
