@@ -44,12 +44,20 @@ const start = () => {
       description: 'Initial greeting.',
     },
     {
+      command: '/help',
+      description: 'Get information about commands.',
+    },
+    {
       command: '/info',
-      description: 'Get information about yourself.',
+      description: 'Get list of available commands.',
     },
     {
       command: '/game',
-      description: 'Game "guess the number"',
+      description: 'Game "guess the number".',
+    },
+    {
+      command: '/remind',
+      description: 'Todo list.',
     },
   ]);
 
@@ -69,7 +77,7 @@ const start = () => {
       );
       return bot.sendMessage(
         chatId,
-        `Welcome!\nList of available commands:\n/start - initial greeting\n/info - Get information about yourself\n/game - game 'guess the number'`
+        `Welcome!\nList of available commands:\n/start - initial greeting.\n/help - get list of available commands.\n/info - Get information about yourself.\n/game - game 'guess the number'.\n/remind - todo list(For example: remind me to 'eat' at '4:25 PM(AM)').`
       );
     }
 
@@ -89,6 +97,17 @@ const start = () => {
       }
     }
 
+    if (text === '/help') {
+      await bot.sendSticker(
+        chatId,
+        'https://tlgrm.ru/_/stickers/182/af4/182af458-864d-3756-9525-c4bbe46f7426/6.webp'
+      );
+      return bot.sendMessage(
+        chatId,
+        `List of available commands:\n/start - initial greeting.\n/help - get list of available commands.\n/info - Get information about yourself.\n/game - game 'guess the number'.\n/remind - todo list(For example: remind me to 'eat' at '4:25 PM(AM)').`
+      );
+    }
+
     if (text === '/info') {
       return bot.sendMessage(
         chatId,
@@ -100,17 +119,18 @@ const start = () => {
       return startGame(chatId);
     }
 
-    return bot.sendMessage(chatId, `I don't understand you, please repeat again!`);
+    // return bot.sendMessage(chatId, `I don't understand you, please repeat again!`);
   });
 
   // Обработка кнопок
   bot.on('callback_query', async (msg) => {
     const data = msg.data;
     const chatId = msg.message.chat.id;
+
     if (data === '/again') {
       return startGame(chatId);
     }
-    if (data === chats[chatId]) {
+    if (data == chats[chatId]) {
       return bot.sendMessage(chatId, `You guessed the number ${data}`, againOptions);
     } else {
       return bot.sendMessage(
@@ -120,6 +140,36 @@ const start = () => {
       );
     }
   });
+
+  // Module todo
+  let notes = [];
+
+  bot.onText(/\/remind me to (.+) at (.+)/, function (msg, match) {
+    const chatId = msg.chat.id;
+    const text = match[1];
+    const time = match[2];
+
+    notes.push({ uid: chatId, time: time, text: text });
+
+    bot.sendMessage(chatId, 'Excellent! I will definitely remind you!');
+  });
+
+  setInterval(function () {
+    for (let i = 0; i < notes.length; i++) {
+      const curDate = new Date().toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      });
+      if (notes[i]['time'] === curDate) {
+        bot.sendMessage(
+          notes[i]['uid'],
+          'I remind you that you must: ' + notes[i]['text'] + ' now.'
+        );
+        notes.splice(i, 1);
+      }
+    }
+  }, 1000);
 };
 
 start();
