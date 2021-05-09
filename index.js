@@ -57,10 +57,11 @@ const start = () => {
    * Return нужен, чтобы при выполнении какой-нибудь команды -
    * - выполнение кода на этом завершается.
    */
-  // Обрабокта сообщений
+  // Обработка сообщений
   bot.on('message', async (msg) => {
-    const text = msg.text;
     const chatId = msg.chat.id;
+    const text = msg.text.toLowerCase();
+
     if (text === '/start') {
       await bot.sendSticker(
         chatId,
@@ -70,6 +71,22 @@ const start = () => {
         chatId,
         `Welcome!\nList of available commands:\n/start - initial greeting\n/info - Get information about yourself\n/game - game 'guess the number'`
       );
+    }
+
+    const greetingsWords = ['hello', 'hi', 'hey'];
+    for (let i = 0; i < greetingsWords.length; i++) {
+      const word = greetingsWords[i];
+      if (text.includes(word)) {
+        return bot.sendMessage(chatId, `Hello, ${msg.from.first_name} :)`);
+      }
+    }
+
+    const goodbyeWords = ['bye', 'goodbye'];
+    for (let i = 0; i < goodbyeWords.length; i++) {
+      const word = goodbyeWords[i];
+      if (text.includes(word)) {
+        return bot.sendMessage(chatId, `Hope to see you around again, Bye :)`);
+      }
     }
 
     if (text === '/info') {
