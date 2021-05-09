@@ -3,6 +3,7 @@
 ### Useful links:
 
 - [node-telegram-bot-api documentation](https://github.com/yagop/node-telegram-bot-api)
+- [node-telegram-bot-api webhook for heroku](https://github.com/yagop/node-telegram-bot-api/blob/master/examples/webhook/heroku.js)
 - [Telegram stickers](https://tlgrm.ru/stickers)
 - [Config vars heroku](https://devcenter.heroku.com/articles/config-vars)
 
@@ -29,3 +30,50 @@
   <h3>Screenshot</h3>
   <img style="margin:50px 0;" src="screenshot.png" />
 </div>
+
+### Code notes
+
+- **Module todo: display datetime in 24 hour format**
+
+  ```js
+  let notes = [];
+
+  bot.onText(/\/remind me to (.+) at (.+)/, function (msg, match) {
+    const chatId = msg.chat.id;
+    const text = match[1];
+    const time = match[2];
+
+    notes.push({ uid: chatId, time: time, text: text });
+
+    bot.sendMessage(chatId, 'Excellent! I will definitely remind you!');
+  });
+
+  setInterval(function () {
+    for (let i = 0; i < notes.length; i++) {
+      const curDate = new Date().getHours() + ':' + new Date().getMinutes();
+      if (notes[i]['time'] === curDate) {
+        bot.sendMessage(
+          notes[i]['uid'],
+          'I remind you that you must: ' + notes[i]['text'] + ' now.'
+        );
+        notes.splice(i, 1);
+      }
+    }
+  }, 1000);
+  ```
+
+  - **Game: 'guess the number'**
+
+  ```js
+  bot.onText(/\/guess (.+)/, function (msg, match) {
+    const randomNumber = Math.floor(Math.random() * 10);
+    const chatId = msg.chat.id;
+    const number = match[1];
+
+    if (number == randomNumber) {
+      bot.sendMessage(chatId, 'You win!');
+    } else {
+      bot.sendMessage(chatId, 'You lose!');
+    }
+  });
+  ```
