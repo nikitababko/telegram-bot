@@ -62,7 +62,7 @@
   }, 1000);
   ```
 
-  - **Game: 'guess the number'**
+- **Game: 'guess the number'**
 
   ```js
   bot.onText(/\/guess (.+)/, function (msg, match) {
